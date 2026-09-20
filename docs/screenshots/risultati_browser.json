@@ -1,0 +1,12 @@
+{
+  "passed": 6,
+  "checks": [
+    "Login segreteria e dashboard",
+    "Registrazione paziente con campi ripuliti e lista aggiornata",
+    "Prenotazione della visita visibile nella tabella",
+    "Annullamento con record conservato e contatore aggiornato",
+    "Logout con ritorno alla schermata di accesso",
+    "Accesso medico con assenza dei moduli amministrativi"
+  ],
+  "environment": "Browser locale su archivio di prova separato, porta 8765"
+}

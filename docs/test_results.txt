@@ -1,0 +1,31 @@
+test_anonymous_read_is_rejected (test_api.ApiTests.test_anonymous_read_is_rejected) ... ok
+test_availability_validation (test_api.ApiTests.test_availability_validation) ... ok
+test_booking_conflict_and_cancellation_releases_slot (test_api.ApiTests.test_booking_conflict_and_cancellation_releases_slot) ... ok
+test_competing_bookings_only_one_succeeds (test_api.ApiTests.test_competing_bookings_only_one_succeeds) ... ok
+test_dashboard_and_read_routes (test_api.ApiTests.test_dashboard_and_read_routes) ... ok
+test_date_time_normalization_prevents_duplicate (test_api.ApiTests.test_date_time_normalization_prevents_duplicate) ... ok
+test_invalid_or_out_of_schedule_slot (test_api.ApiTests.test_invalid_or_out_of_schedule_slot) ... ok
+test_invalid_types_and_whitespace (test_api.ApiTests.test_invalid_types_and_whitespace) ... ok
+test_login_invalid_credentials_and_profile (test_api.ApiTests.test_login_invalid_credentials_and_profile) ... ok
+test_logout_revokes_token_preserves_other_sessions_and_database (test_api.ApiTests.test_logout_revokes_token_preserves_other_sessions_and_database) ... ok
+test_malformed_and_non_object_json (test_api.ApiTests.test_malformed_and_non_object_json) ... ok
+test_missing_patient_fields (test_api.ApiTests.test_missing_patient_fields) ... ok
+test_patient_creation_and_persistence (test_api.ApiTests.test_patient_creation_and_persistence) ... ok
+test_report_validation_and_missing_patient (test_api.ApiTests.test_report_validation_and_missing_patient) ... ok
+test_role_matrix (test_api.ApiTests.test_role_matrix) ... ok
+test_server_restart_persists_data_but_not_sessions (test_api.ApiTests.test_server_restart_persists_data_but_not_sessions) ... ok
+test_sql_text_is_stored_as_data (test_api.ApiTests.test_sql_text_is_stored_as_data) ... ok
+test_static_page (test_api.ApiTests.test_static_page) ... ok
+test_unknown_patient_and_appointment (test_api.ApiTests.test_unknown_patient_and_appointment) ... ok
+test_import_does_not_create_database (test_api.ImportTests.test_import_does_not_create_database) ... ok
+test_documented_success_responses_and_error_schema (test_contract.ContractTests.test_documented_success_responses_and_error_schema) ... ok
+test_internal_references_and_operation_count (test_contract.ContractTests.test_internal_references_and_operation_count) ... ok
+test_empty_body_revokes_only_current_session (test_logout.LogoutTests.test_empty_body_revokes_only_current_session) ... ok
+test_invalid_json_still_rejected_for_login (test_logout.LogoutTests.test_invalid_json_still_rejected_for_login) ... ok
+test_json_body_is_supported (test_logout.LogoutTests.test_json_body_is_supported) ... ok
+test_repeated_or_missing_token_is_harmless (test_logout.LogoutTests.test_repeated_or_missing_token_is_harmless) ... ok
+
+----------------------------------------------------------------------
+Ran 26 tests in 21.843s
+
+OK

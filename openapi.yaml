@@ -1,0 +1,861 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "SanitaSmart API",
+    "version": "1.1.0",
+    "description": "Prototipo didattico locale. Gli utenti autenticati leggono tutte le risorse; le scritture dipendono dal ruolo. Il codice 401 include anche il ruolo insufficiente nella versione corrente. Gli indicatori della dashboard sono operativi, non economico-finanziari."
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8000/api"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    }
+  ],
+  "paths": {
+    "/login": {
+      "post": {
+        "summary": "Autentica un utente",
+        "responses": {
+          "200": {
+            "description": "Operazione completata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResult"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token assente, non valido o ruolo non autorizzato",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Corpo o campi non validi, slot non previsto o già occupato",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginInput"
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/logout": {
+      "post": {
+        "summary": "Revoca la sessione corrente",
+        "description": "Idempotente. Un token assente o già revocato produce comunque 204; il corpo è ignorato. Nessuna risposta JSON.",
+        "security": [],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Bearer seguito dal token da revocare."
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Sessione revocata o già assente; risposta senza corpo"
+          }
+        }
+      }
+    },
+    "/me": {
+      "get": {
+        "summary": "Profilo autenticato",
+        "responses": {
+          "200": {
+            "description": "Operazione completata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token assente, non valido o ruolo non autorizzato",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dashboard": {
+      "get": {
+        "summary": "Indicatori operativi della clinica",
+        "responses": {
+          "200": {
+            "description": "Operazione completata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dashboard"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token assente, non valido o ruolo non autorizzato",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/patients": {
+      "get": {
+        "summary": "Elenca i pazienti",
+        "responses": {
+          "200": {
+            "description": "Operazione completata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Patient"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token assente, non valido o ruolo non autorizzato",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Registra un paziente",
+        "responses": {
+          "201": {
+            "description": "Operazione completata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Patient"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token assente, non valido o ruolo non autorizzato",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Corpo o campi non validi, slot non previsto o già occupato",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Ruoli ammessi alla scrittura: admin, segreteria.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatientInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/appointments": {
+      "get": {
+        "summary": "Elenca visite confermate e annullate",
+        "responses": {
+          "200": {
+            "description": "Operazione completata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Appointment"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token assente, non valido o ruolo non autorizzato",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Prenota una visita",
+        "responses": {
+          "201": {
+            "description": "Operazione completata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Appointment"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token assente, non valido o ruolo non autorizzato",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Corpo o campi non validi, slot non previsto o già occupato",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Risorsa non trovata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Ruoli ammessi alla scrittura: admin, segreteria.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AppointmentInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/appointments/{id}/cancel": {
+      "patch": {
+        "summary": "Annulla conservando il record",
+        "responses": {
+          "200": {
+            "description": "Operazione completata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Cancellation"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token assente, non valido o ruolo non autorizzato",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Risorsa non trovata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Ruoli ammessi alla scrittura: admin, segreteria.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ]
+      }
+    },
+    "/reports": {
+      "get": {
+        "summary": "Consulta i referti",
+        "responses": {
+          "200": {
+            "description": "Operazione completata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Report"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token assente, non valido o ruolo non autorizzato",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Pubblica un referto",
+        "responses": {
+          "201": {
+            "description": "Operazione completata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Report"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token assente, non valido o ruolo non autorizzato",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Corpo o campi non validi, slot non previsto o già occupato",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Risorsa non trovata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Ruoli ammessi alla scrittura: admin, medico.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReportInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/availability": {
+      "get": {
+        "summary": "Elenca gli slot liberi e occupati",
+        "responses": {
+          "200": {
+            "description": "Operazione completata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Availability"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token assente, non valido o ruolo non autorizzato",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Corpo o campi non validi, slot non previsto o già occupato",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "in": "query",
+            "name": "doctor",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "date",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Token opaco del login, conservato in memoria sul server fino a logout o arresto."
+      }
+    },
+    "schemas": {
+      "User": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "email",
+          "role"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "admin",
+              "segreteria",
+              "medico"
+            ]
+          }
+        }
+      },
+      "Patient": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "email",
+          "phone"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          }
+        }
+      },
+      "Appointment": {
+        "type": "object",
+        "required": [
+          "id",
+          "patientId",
+          "patientName",
+          "doctor",
+          "specialty",
+          "date",
+          "time",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "patientId": {
+            "type": "integer"
+          },
+          "patientName": {
+            "type": "string"
+          },
+          "doctor": {
+            "type": "string"
+          },
+          "specialty": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "time": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "Confermata",
+              "Annullata"
+            ]
+          }
+        }
+      },
+      "Report": {
+        "type": "object",
+        "required": [
+          "id",
+          "patientId",
+          "patientName",
+          "date",
+          "type",
+          "outcome",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "patientId": {
+            "type": "integer"
+          },
+          "patientName": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "type": {
+            "type": "string"
+          },
+          "outcome": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "Disponibile"
+            ]
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      },
+      "LoginInput": {
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string",
+            "format": "password"
+          }
+        }
+      },
+      "LoginResult": {
+        "type": "object",
+        "required": [
+          "token",
+          "user"
+        ],
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        }
+      },
+      "PatientInput": {
+        "type": "object",
+        "required": [
+          "name",
+          "email",
+          "phone"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Testo non vuoto dopo la rimozione degli spazi esterni."
+          },
+          "email": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Testo non vuoto dopo la rimozione degli spazi esterni."
+          },
+          "phone": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Testo non vuoto dopo la rimozione degli spazi esterni."
+          }
+        }
+      },
+      "AppointmentInput": {
+        "type": "object",
+        "required": [
+          "patientId",
+          "doctor",
+          "specialty",
+          "date",
+          "time"
+        ],
+        "properties": {
+          "patientId": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "string",
+                "pattern": "^[0-9]+$"
+              }
+            ],
+            "description": "Identificativo positivo; il frontend invia la selezione come stringa."
+          },
+          "doctor": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Testo non vuoto dopo la rimozione degli spazi esterni."
+          },
+          "specialty": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Testo non vuoto dopo la rimozione degli spazi esterni."
+          },
+          "date": {
+            "type": "string",
+            "example": "2026-10-12"
+          },
+          "time": {
+            "type": "string",
+            "example": "10:00",
+            "description": "Slot di 30 minuti 09:00-12:30 e 14:00-17:30; normalizzato HH:MM."
+          }
+        }
+      },
+      "ReportInput": {
+        "type": "object",
+        "required": [
+          "patientId",
+          "date",
+          "type",
+          "outcome"
+        ],
+        "properties": {
+          "patientId": {
+            "oneOf": [
+              {
+                "type": "integer",
+                "minimum": 1
+              },
+              {
+                "type": "string",
+                "pattern": "^[0-9]+$"
+              }
+            ],
+            "description": "Identificativo positivo; il frontend invia la selezione come stringa."
+          },
+          "date": {
+            "type": "string",
+            "example": "2026-10-12"
+          },
+          "type": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Testo non vuoto dopo la rimozione degli spazi esterni."
+          },
+          "outcome": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Testo non vuoto dopo la rimozione degli spazi esterni."
+          }
+        }
+      },
+      "Dashboard": {
+        "type": "object",
+        "required": [
+          "patients",
+          "appointments",
+          "reports",
+          "today"
+        ],
+        "properties": {
+          "patients": {
+            "type": "integer"
+          },
+          "appointments": {
+            "type": "integer"
+          },
+          "reports": {
+            "type": "integer"
+          },
+          "today": {
+            "type": "string",
+            "example": "20/09/2026"
+          }
+        }
+      },
+      "Availability": {
+        "type": "object",
+        "required": [
+          "doctor",
+          "date",
+          "available",
+          "booked"
+        ],
+        "properties": {
+          "doctor": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "available": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "booked": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Cancellation": {
+        "type": "object",
+        "required": [
+          "id",
+          "status"
+        ],
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "Annullata"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
